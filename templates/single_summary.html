@@ -1,0 +1,187 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block title %}Is this summary good?{% endblock %}
+{% block content %}
+  <div class="container-fluid text-wrap">
+    <h1 class="text-center">{{ rna_id }}</h1>
+    <p class="text-start">{{ paragraph1 }}</p>
+  </div>
+
+
+  <div class="container-fluid text-center">
+    
+    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+      <button type="button" type="submit" class="btn btn-danger" id="bad_feedback" >Not Good</button>
+      <button type="button" type="submit" class="btn btn-success" id="good_feedback">Good!</button>
+    </div>
+  
+  </div>
+
+
+    <div class="accordion" id="contextPromptDisplay">
+    
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdditional" aria-expanded="false" aria-controls="collapseAdditional">
+          Additional Feedback
+      </button>
+      </h2>
+      <div id="collapseAdditional" class="accordion-collapse collapse" data-bs-parent="#contextPromptDisplay">
+        <div class="accordion-body">
+            <p>Check whichever additional feedback you feel is necessary. Leaving blank implies that aspect of the summary/context is fine.</p>
+    
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="false_positive">
+            <label class="form-check-label" for="flexCheckDefault">
+                ID is a false positive
+            </label>
+            </div>
+    
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="hallucinations">
+            <label class="form-check-label" for="flexCheckDefault">
+                Contains hallucinations (fake references, made up facts etc)
+            </label>
+            </div>
+    
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="inaccurate">
+            <label class="form-check-label" for="flexCheckChecked">
+                Contains Inaccurate text (statements not supported by the context)
+            </label>
+            </div>
+    
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="contradictions">
+            <label class="form-check-label" for="flexCheckDefault">
+                Contains contradictions
+            </label>
+            </div>
+    
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="specificity">
+            <label class="form-check-label" for="flexCheckChecked">
+                Overly specific (e.g. has very specific experimental method information)
+            </label>
+            </div>
+    
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bad_length">
+            <label class="form-check-label" for="flexCheckDefault">
+                Bad length (summary is too short/long)
+            </label>
+            </div>
+    
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="mentions_ai">
+            <label class="form-check-label" for="flexCheckChecked">
+                Mentions being an AI
+            </label>
+            </div>
+    
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="short_context">
+            <label class="form-check-label" for="flexCheckChecked">
+                Context too short
+            </label>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+          Context
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#contextPromptDisplay">
+        <div class="accordion-body">
+          {{ context }}
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Prompts
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#contextPromptDisplay">
+        <div class="accordion-body">
+          This is where the prompts will be displayed, eventually
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+
+<script type="text/javascript">
+  var good_button = document.getElementById("good_feedback")
+  var bad_button = document.getElementById("bad_feedback")
+
+  bad_button.onclick = function() {
+      // Get all the checkbox results
+      var additional_feedback = get_extra_feedback();
+      
+      additional_feedback.feedback = "bad";
+      additional_feedback.rna_id = "{{rna_id}}";
+      additional_feedback.summary_id = "{{summ_id}}";
+      
+
+      console.log(additional_feedback);
+      
+      send_feedback(additional_feedback);
+  }
+
+  good_button.onclick = function() {
+      // Get all the checkbox results
+      var additional_feedback = get_extra_feedback();
+      
+      additional_feedback.feedback = "good";
+      additional_feedback.rna_id = "{{rna_id}}";
+      additional_feedback.summary_id = "{{summ_id}}";
+      
+
+      console.log(additional_feedback);
+      
+      send_feedback(additional_feedback);
+  }
+
+  function get_extra_feedback() {
+    var additional_feedback = new Object()
+    additional_feedback.false_positive = document.getElementById("false_positive").checked;
+    document.getElementById("false_positive").checked = false;
+
+    additional_feedback.contains_hallucinations = document.getElementById("hallucinations").checked;
+    document.getElementById("hallucinations").checked = false;
+
+    additional_feedback.inaccurate_text = document.getElementById("inaccurate").checked;
+    document.getElementById("inaccurate").checked = false;
+
+    additional_feedback.contradictory = document.getElementById("contradictions").checked;
+    document.getElementById("contradictions").checked = false;
+
+    additional_feedback.over_specific = document.getElementById("specificity").checked;
+    document.getElementById("specificity").checked = false;
+
+    additional_feedback.bad_length = document.getElementById("bad_length").checked;
+    document.getElementById("bad_length").checked = false;
+    
+    additional_feedback.mentions_ai = document.getElementById("mentions_ai").checked;
+    document.getElementById("mentions_ai").checked = false;
+    
+    additional_feedback.short_context = document.getElementById("short_context").checked;
+    document.getElementById("short_context").checked = false;
+
+
+    return additional_feedback;
+
+  }
+
+  </script>
+
+{% endblock %}
+  
