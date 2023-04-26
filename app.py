@@ -10,13 +10,9 @@ Bootstrap5(app)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 @app.route("/")
-def hello_world():
-    paragraph1 = "Hello"
-    rna_id = "World!"
-    app.logger.debug("Hello? Does this work?")
-    resp =  make_response(render_template("single_summary.html", paragraph1=paragraph1, rna_id=rna_id, context=""))
+def intro():
+    resp =  make_response(render_template("intro.html"))
     user_id = uuid.uuid4()
-
     resp.set_cookie("user", str(user_id))
     return resp
 
