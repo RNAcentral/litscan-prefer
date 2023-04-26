@@ -6,9 +6,9 @@ authors = ["Andrew Green <agreen@ebi.ac.uk>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.9"
 Flask = "^2.2.3"
-psycopg2 = "^2.9.6"
+psycopg2-binary = "^2.9.6"
 gunicorn = "^20.1.0"
 bootstrap-flask = "^2.2.0"
 
