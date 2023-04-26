@@ -1,10 +1,25 @@
 <!doctype html>
 {% extends "base.html" %}
-{% block title %}Is this summary good?{% endblock %}
+{% block title %}Is this summary for {{rna_id}} good?{% endblock %}
 {% block content %}
+<div class="accordion" id="contextDisplay">
+<div class="accordion-item">
+  <h2 class="accordion-header">
+    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+      Context
+    </button>
+  </h2>
+  <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#contextDisplay">
+    <div class="accordion-body">
+      {{ context }}
+    </div>
+  </div>
+</div>
+</div>
+
   <div class="container-fluid text-wrap">
     <h1 class="text-center">{{ rna_id }}</h1>
-    <p class="text-start">{{ paragraph1 }}</p>
+    <p class="text-start">{{ summary }}</p>
   </div>
 
 
@@ -18,7 +33,7 @@
   </div>
 
 
-    <div class="accordion" id="contextPromptDisplay">
+    <div class="accordion" id="feedbackPromptDisplay">
     
     <div class="accordion-item">
       <h2 class="accordion-header">
@@ -26,7 +41,7 @@
           Additional Feedback
       </button>
       </h2>
-      <div id="collapseAdditional" class="accordion-collapse collapse" data-bs-parent="#contextPromptDisplay">
+      <div id="collapseAdditional" class="accordion-collapse collapse" data-bs-parent="#feedbackPromptDisplay">
         <div class="accordion-body">
             <p>Check whichever additional feedback you feel is necessary. Leaving blank implies that aspect of the summary/context is fine.</p>
     
@@ -88,29 +103,33 @@
         </div>
       </div>
     </div>
-
-    <div class="accordion-item">
-      <h2 class="accordion-header">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-          Context
-        </button>
-      </h2>
-      <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#contextPromptDisplay">
-        <div class="accordion-body">
-          {{ context }}
-        </div>
-      </div>
-    </div>
-
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
           Prompts
         </button>
       </h2>
-      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#contextPromptDisplay">
+      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#feedbackPromptDisplay">
         <div class="accordion-body">
-          This is where the prompts will be displayed, eventually
+          <h4>Initial Prompt</h4>
+          <p>You are an experienced academic and always provide references for each sentence you write. You are a researcher who always answers in a factual and unbiased way. Provide at least one reference per sentence you produce.As an experienced academic who ALWAYS provides references for each sentence you write, produce a summary from the text below, focusing on {{rna_id}} and using the references for each sentence. The reference for each sentence in the text is given at the end of the sentence, enclosed by []. You MUST provide at least one reference per sentence you produce. Use only the information in the context given below. Use 200 words or less.</p>
+          <p>
+          {{context}}
+          <br>
+          Summary:
+          </p>
+          <br>
+          <h4>Revision prompt (if necessary)</h4>
+          <p>Given the summary, and its original context, rewrite the summary to include references at the end of each sentence. References are provided in the original context, enclosed in [].</p>
+          <p>Summary: {{summary}}</p>
+          <br>
+          <p>Original context:
+            <br>
+          {{context}}
+          <br>
+          Revised Summary: 
+          </p>
+
         </div>
       </div>
     </div>
