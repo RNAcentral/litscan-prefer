@@ -11,7 +11,8 @@
             {{ bootstrap.load_css() }}
         {% endblock %}
 
-        <title>Your page title</title>
+        <title>{% block title %}LitScan chatGPT summaries{% endblock %}</title>
+        
         {% endblock %}
     </head>
     <body>
