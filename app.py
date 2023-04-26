@@ -16,6 +16,13 @@ def intro():
     resp.set_cookie("user", str(user_id))
     return resp
 
+@app.route("/reset_seen")
+def reset_seen():
+    resp = make_response(url_for("intro"))
+    resp.set_cookie("seen_ids", "")
+    return resp
+
+
 @app.route("/single")
 def present_single_summary():
     conn = psycopg2.connect(os.getenv("SUMMDATABASE"))
