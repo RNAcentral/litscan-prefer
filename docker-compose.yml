@@ -5,7 +5,7 @@ services:
     build:
       context: ./services/web
       dockerfile: Dockerfile
-    command: gunicorn --bind 0.0.0.0:5000 manage:app
+    command: gunicorn --bind 0.0.0.0:5000 --timeout 600 manage:app
     ports:
       - 5000:5000
     env_file:
@@ -13,12 +13,12 @@ services:
     depends_on:
       - db
   db:
-    image: postgres:13-alpine
+    image: postgres:11-alpine
     volumes:
-      - postgres_data_prod:/var/lib/postgresql/data/
+      - litscan-prefer_postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.prod.db
 
 volumes:
-  postgres_data_prod:
+  litscan-prefer_postgres_data:
     external: true
