@@ -36,8 +36,17 @@
                                 window.location.href = result.responseText;
                             }
                         });
-                    }
-                        
+                    } 
+            </script>
+
+            <script type="text/javascript">
+                function reset_seen_list(){
+                    $.get({url:'{{url_for("reset_seen")}}'},
+                    function(result){
+                        console.log("List of seend IDs reset");
+                        window.location.href = result;
+                    });
+                }
             </script>
         {% endblock %}
     </body>
