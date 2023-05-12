@@ -41,7 +41,7 @@ def present_single_summary():
     summ_id, rna_id, context, summary = cur.fetchone()
 
     app.logger.debug(rna_id)
-    resp =  make_response(render_template("single_summary.html", paragraph1=summary, rna_id=rna_id, context=context, summ_id=summ_id))
+    resp =  make_response(render_template("single_summary.html", summary=summary, rna_id=rna_id, context=context, summ_id=summ_id))
     if len(seen_ids) > 0:
         seen_ids += f"{rna_id},"
     else:
