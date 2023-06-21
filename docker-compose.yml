@@ -14,6 +14,8 @@ services:
       - db
   db:
     image: postgres:11-alpine
+    ports:
+      - 5432:5432
     volumes:
       - litscan-prefer_postgres_data:/var/lib/postgresql/data/
     env_file:
