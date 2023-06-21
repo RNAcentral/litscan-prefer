@@ -29,25 +29,39 @@ def present_single_summary():
     cur = conn.cursor()
 
     ## Get the IDs this browser has seen
-    seen_ids = request.cookies.get("seen_ids") or ""
+    if request.cookies.get("seen_ids") == "":
+        seen_ids = []
+    else:
+        seen_ids = [int(i) for i in request.cookies.get("seen_ids").split(" ")]
+    print(seen_ids)
     ## Get maximum ID
     cur.execute("SELECT COUNT(id) FROM litscan_article_summaries;")
     N = cur.fetchone()[0]
+    cur.execute("SELECT MIN(id) FROM litscan_article_summaries;")
+    first_id = cur.fetchone()[0]
 
     ## Query to randomly select a single summary
-    selected = random.randint(0, N)
+    if len(seen_ids) == 0:
+        selected = first_id
+    else:
+        selected = seen_ids[-1] + 1
+
+    print(seen_ids, selected, N)
+
+    if (selected-first_id) >= N:
+        selected = first_id
+    
+    if not selected in seen_ids:
+        seen_ids.append(selected)
+    print(selected)
     QUERY = f"SELECT * FROM litscan_article_summaries WHERE id = {selected};"
     cur.execute(QUERY)
-    summ_id, rna_id, context, summary = cur.fetchone()
+    summ_id, rna_id, context, summary, cost, total_tokens = cur.fetchone()
 
     app.logger.debug(rna_id)
     resp =  make_response(render_template("single_summary.html", summary=summary, rna_id=rna_id, context=context, summ_id=summ_id))
-    if len(seen_ids) > 0:
-        seen_ids += f"{rna_id},"
-    else:
-        seen_ids = f"{rna_id},"
 
-    resp.set_cookie("seen_ids", seen_ids)
+    resp.set_cookie("seen_ids", " ".join([str(i) for i in seen_ids]))
 
     user_id = request.cookies.get("user")
     if user_id is None:
